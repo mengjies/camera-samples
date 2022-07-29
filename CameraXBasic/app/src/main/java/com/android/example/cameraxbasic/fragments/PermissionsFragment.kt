@@ -31,8 +31,7 @@ private const val PERMISSIONS_REQUEST_CODE = 10
 private val PERMISSIONS_REQUIRED = arrayOf(Manifest.permission.CAMERA)
 
 /**
- * The sole purpose of this fragment is to request permissions and, once granted, display the
- * camera fragment to the user.
+ * 此 fragment 的唯一用途是请求权限，并在授予权限后向用户显示相机 fragment
  */
 class PermissionsFragment : Fragment() {
 
@@ -71,7 +70,7 @@ class PermissionsFragment : Fragment() {
 
     companion object {
 
-        /** Convenience method used to check if all permissions required by this app are granted */
+        /** 用于检查是否授予此应用程序所需的所有权限的便利方法*/
         fun hasPermissions(context: Context) = PERMISSIONS_REQUIRED.all {
             ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
         }

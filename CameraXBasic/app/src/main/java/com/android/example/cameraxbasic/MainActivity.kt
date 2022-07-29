@@ -34,8 +34,8 @@ const val KEY_EVENT_EXTRA = "key_event_extra"
 private const val IMMERSIVE_FLAG_TIMEOUT = 500L
 
 /**
- * Main entry point into our app. This app follows the single-activity pattern, and all
- * functionality is implemented in the form of fragments.
+ * 进入我们应用程序的主要入口点。
+ * 该应用程序遵循single-activity模式，所有功能都以fragments的形式实现。
  */
 class MainActivity : AppCompatActivity() {
 
@@ -49,14 +49,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Before setting full screen flags, we must wait a bit to let UI settle; otherwise, we may
-        // be trying to set app to immersive mode before it's ready and the flags do not stick
+        // 在设置全屏标志之前，我们必须等待一点，让UI稳定下来；
+        // 否则，我们可能会尝试在应用程序准备就绪且标志不固定之前将其设置为沉浸式模式
         activityMainBinding.fragmentContainer.postDelayed({
             hideSystemUI()
         }, IMMERSIVE_FLAG_TIMEOUT)
     }
 
-    /** When key down event is triggered, relay it via local broadcast so fragments can handle it */
+    /** 当按键按下事件被触发时，通过本地广播进行中继，以便fragments可以处理它*/
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         return when (keyCode) {
             KeyEvent.KEYCODE_VOLUME_DOWN -> {
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            // Workaround for Android Q memory leak issue in IRequestFinishCallback$Stub.
+            // IRequestFinishCallback$Stub中 Android Q内存泄漏问题的解决方法。
             // (https://issuetracker.google.com/issues/139738913)
             finishAfterTransition()
         } else {
@@ -80,21 +80,27 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
 
-        /** Use external media if it is available, our app's file directory otherwise */
+        /** 使用外部媒体（如果可用），否则使用我们应用程序的文件目录*/
         fun getOutputDirectory(context: Context): File {
             val appContext = context.applicationContext
             val mediaDir = context.externalMediaDirs.firstOrNull()?.let {
-                File(it, appContext.resources.getString(R.string.app_name)).apply { mkdirs() } }
+                File(it, appContext.resources.getString(R.string.app_name)).apply { mkdirs() }
+            }
             return if (mediaDir != null && mediaDir.exists())
                 mediaDir else appContext.filesDir
         }
     }
 
     private fun hideSystemUI() {
+        //WindowCompat  访问窗口功能帮助类
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        WindowInsetsControllerCompat(window, activityMainBinding.fragmentContainer).let { controller ->
+        WindowInsetsControllerCompat(
+            window,
+            activityMainBinding.fragmentContainer
+        ).let { controller ->
             controller.hide(WindowInsetsCompat.Type.systemBars())
-            controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
     }
 }
