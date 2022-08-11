@@ -64,14 +64,14 @@ class GalleryFragment internal constructor() : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Mark this as a retain fragment, so the lifecycle does not get restarted on config change
+        // 将此标记为保留fragment，因此生命周期不会在配置更改时重新启动
         retainInstance = true
 
-        // Get root directory of media from navigation arguments
+        // 从导航参数中获取媒体的根目录
         val rootDirectory = File(args.rootDirectory)
 
-        // Walk through all files in the root directory
-        // We reverse the order of the list to present the last photos first
+        // 遍历根目录中的所有文件
+        // 我们颠倒列表的顺序，首先呈现最后一张照片
         mediaList = rootDirectory.listFiles { file ->
             EXTENSION_WHITELIST.contains(file.extension.toUpperCase(Locale.ROOT))
         }?.sortedDescending()?.toMutableList() ?: mutableListOf()
@@ -89,55 +89,55 @@ class GalleryFragment internal constructor() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //Checking media files list
+        // 检查媒体文件列表
         if (mediaList.isEmpty()) {
             fragmentGalleryBinding.deleteButton.isEnabled = false
             fragmentGalleryBinding.shareButton.isEnabled = false
         }
 
-        // Populate the ViewPager and implement a cache of two media items
+        // 填充 ViewPager 并实现两个媒体项的缓存
         fragmentGalleryBinding.photoViewPager.apply {
             offscreenPageLimit = 2
             adapter = MediaPagerAdapter(childFragmentManager)
         }
 
-        // Make sure that the cutout "safe area" avoids the screen notch if any
+        // 确保切口“安全区域”避开屏幕缺口（如果有）
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // Use extension method to pad "inside" view containing UI using display cutout's bounds
+            // 使用扩展方法使用显示切口的边界填充包含 UI 的“内部”视图
             fragmentGalleryBinding.cutoutSafeArea.padWithDisplayCutout()
         }
 
-        // Handle back button press
+        // 后退
         fragmentGalleryBinding.backButton.setOnClickListener {
             Navigation.findNavController(requireActivity(), R.id.fragment_container).navigateUp()
         }
 
-        // Handle share button press
+        // 分享
         fragmentGalleryBinding.shareButton.setOnClickListener {
 
             mediaList.getOrNull(fragmentGalleryBinding.photoViewPager.currentItem)?.let { mediaFile ->
 
-                // Create a sharing intent
+                // 分享 intent
                 val intent = Intent().apply {
-                    // Infer media type from file extension
+                    // 从文件扩展名推断媒体类型
                     val mediaType = MimeTypeMap.getSingleton()
                             .getMimeTypeFromExtension(mediaFile.extension)
-                    // Get URI from our FileProvider implementation
+                    // 从我们的 FileProvider 实现中获取 URI
                     val uri = FileProvider.getUriForFile(
                             view.context, BuildConfig.APPLICATION_ID + ".provider", mediaFile)
-                    // Set the appropriate intent extra, type, action and flags
+                    // 设置适当的额外意图、类型、操作和标志
                     putExtra(Intent.EXTRA_STREAM, uri)
                     type = mediaType
                     action = Intent.ACTION_SEND
                     flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 }
 
-                // Launch the intent letting the user choose which app to share with
+                // 启动意图，让用户选择要与之共享的应用程序
                 startActivity(Intent.createChooser(intent, getString(R.string.share_hint)))
             }
         }
 
-        // Handle delete button press
+        // 删除
         fragmentGalleryBinding.deleteButton.setOnClickListener {
 
             mediaList.getOrNull(fragmentGalleryBinding.photoViewPager.currentItem)?.let { mediaFile ->
@@ -148,18 +148,18 @@ class GalleryFragment internal constructor() : Fragment() {
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton(android.R.string.yes) { _, _ ->
 
-                            // Delete current photo
+                            // 删除当前照片
                             mediaFile.delete()
 
-                            // Send relevant broadcast to notify other apps of deletion
+                            // 发送相关广播通知其他应用删除
                             MediaScannerConnection.scanFile(
                                     view.context, arrayOf(mediaFile.absolutePath), null, null)
 
-                            // Notify our view pager
+                            // 通知 view pager
                             mediaList.removeAt(fragmentGalleryBinding.photoViewPager.currentItem)
                             fragmentGalleryBinding.photoViewPager.adapter?.notifyDataSetChanged()
 
-                            // If all photos have been deleted, return to camera
+                            // 如果所有照片都已删除，请返回相机
                             if (mediaList.isEmpty()) {
                                 Navigation.findNavController(requireActivity(), R.id.fragment_container).navigateUp()
                             }
