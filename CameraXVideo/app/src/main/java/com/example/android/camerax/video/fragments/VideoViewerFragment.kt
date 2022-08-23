@@ -41,13 +41,13 @@ import java.lang.RuntimeException
 
 /**
  * VideoViewerFragment:
- *      Accept MediaStore URI and play it with VideoView (Also displaying file size and location)
- *      Note: Might be good to retrieve the encoded file mime type (not based on file type)
+ *      接受 MediaStore URI 并使用 VideoView 播放它（还显示文件大小和位置）
+ *      注意：检索编码文件 mime 类型可能很好（不基于文件类型）
  */
 class VideoViewerFragment : androidx.fragment.app.Fragment() {
     private val args: VideoViewerFragmentArgs by navArgs()
 
-    // This property is only valid between onCreateView and onDestroyView.
+    // 该属性仅在 onCreateView 和 onDestroyView 之间有效.
     private var _binding: FragmentVideoViewerBinding? = null
     private val binding get() = _binding!!
 
@@ -57,7 +57,7 @@ class VideoViewerFragment : androidx.fragment.app.Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentVideoViewerBinding.inflate(inflater, container, false)
-        // UI adjustment + hacking to display VideoView use tips / capture result
+        // UI 调整 + hacking 显示 VideoView 使用提示捕获结果
         val tv = TypedValue()
         if (requireActivity().theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
             val actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
@@ -72,12 +72,12 @@ class VideoViewerFragment : androidx.fragment.app.Fragment() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             showVideo(args.uri)
         } else {
-            // force MediaScanner to re-scan the media file.
+            // 强制 MediaScanner 重新扫描媒体文件.
             val path = getAbsolutePathFromUri(args.uri) ?: return
             MediaScannerConnection.scanFile(
                 context, arrayOf(path), null
             ) { _, uri ->
-                // playback video on main thread with VideoView
+                // 使用 VideoView 在主线程上播放视频
                 if (uri != null) {
                     lifecycleScope.launch {
                         showVideo(uri)
@@ -93,11 +93,11 @@ class VideoViewerFragment : androidx.fragment.app.Fragment() {
     }
 
     /**
-     * A helper function to play the recorded video. Note that VideoView/MediaController auto-hides
-     * the play control menus, touch on the video area would bring it back for 3 second.
-     * This functionality not really related to capture, provided here for convenient purpose to view:
-     *   - the captured video
-     *   - the file size and location
+     * 播放录制视频的辅助函数。
+     * 请注意，VideoView/MediaController 会自动隐藏播放控制菜单，触摸视频区域会使其返回 3 秒。
+     * 此功能与捕获无关，此处提供是为了方便查看：
+     *   - 捕获的视频
+     *   - 文件大小和位置
      */
     private fun showVideo(uri : Uri) {
         val fileSize = getFileSizeFromUri(uri)
