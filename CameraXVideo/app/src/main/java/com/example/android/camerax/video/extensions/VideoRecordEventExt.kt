@@ -18,7 +18,7 @@ package com.example.android.camerax.video.extensions
 import androidx.camera.video.VideoRecordEvent
 
 /**
- * A helper extended function to get the name(string) for the VideoRecordEvent.
+ * 一个辅助扩展函数，用于获取 VideoRecordEvent 的名称（字符串）.
  */
 fun VideoRecordEvent.getNameString() : String {
     return when (this) {

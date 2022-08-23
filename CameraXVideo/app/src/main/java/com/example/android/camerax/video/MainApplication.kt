@@ -22,7 +22,7 @@ import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraXConfig
 
 /**
- * Set CameraX logging level to Log.ERROR to avoid excessive logcat messages.
+ * 将 CameraX 日志记录级别设置为 Log.ERROR 以避免过多的 logcat 消息.
  * Refer to https://developer.android.com/reference/androidx/camera/core/CameraXConfig.Builder#setMinimumLoggingLevel(int)
  * for details.
  */

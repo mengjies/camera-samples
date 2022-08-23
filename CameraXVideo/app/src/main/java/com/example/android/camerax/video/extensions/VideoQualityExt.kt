@@ -19,7 +19,7 @@ import androidx.camera.core.AspectRatio
 import androidx.camera.video.Quality
 
 /**
- * a helper function to retrieve the aspect ratio from a QualitySelector enum.
+ * 一个辅助函数，用于从 QualitySelector 枚举中检索纵横比。
  */
 fun Quality.getAspectRatio(quality: Quality): Int {
     return when {
@@ -31,7 +31,7 @@ fun Quality.getAspectRatio(quality: Quality): Int {
 }
 
 /**
- * a helper function to retrieve the aspect ratio string from a Quality enum.
+ * 从质量枚举中检索纵横比字符串的辅助函数.
  */
 fun Quality.getAspectRatioString(quality: Quality, portraitMode:Boolean) :String {
     val hdQualities = arrayOf(Quality.UHD, Quality.FHD, Quality.HD)
@@ -47,7 +47,7 @@ fun Quality.getAspectRatioString(quality: Quality, portraitMode:Boolean) :String
 }
 
 /**
- * Get the name (a string) from the given Video.Quality object.
+ * 从给定的 Video.Quality 对象中获取名称（字符串）.
  */
 fun Quality.getNameString() :String {
     return when (this) {
@@ -60,7 +60,7 @@ fun Quality.getNameString() :String {
 }
 
 /**
- * Translate Video.Quality name(a string) to its Quality object.
+ * 将 Video.Quality 名称（一个字符串）转换为其 Quality 对象.
  */
 fun Quality.getQualityObject(name:String) : Quality {
     return when (name) {

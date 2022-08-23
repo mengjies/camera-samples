@@ -102,7 +102,7 @@ class VideoViewerFragment : androidx.fragment.app.Fragment() {
     private fun showVideo(uri : Uri) {
         val fileSize = getFileSizeFromUri(uri)
         if (fileSize == null || fileSize <= 0) {
-            Log.e("VideoViewerFragment", "Failed to get recorded file size, could not be played!")
+            Log.e("VideoViewerFragment", "获取录制文件大小失败，无法播放！")
             return
         }
 
@@ -121,7 +121,7 @@ class VideoViewerFragment : androidx.fragment.app.Fragment() {
     }
 
     /**
-     * A helper function to get the captured file location.
+     * 获取捕获文件位置的辅助函数.
      */
     private fun getAbsolutePathFromUri(contentUri: Uri): String? {
         var cursor:Cursor? = null
@@ -137,7 +137,7 @@ class VideoViewerFragment : androidx.fragment.app.Fragment() {
             cursor.getString(columnIndex)
         } catch (e: RuntimeException) {
             Log.e("VideoViewerFragment", String.format(
-                "Failed in getting absolute path for Uri %s with Exception %s",
+                "获取 Uri %s 的绝对路径失败，出现异常 %s",
                 contentUri.toString(), e.toString()
             )
             )
@@ -148,7 +148,7 @@ class VideoViewerFragment : androidx.fragment.app.Fragment() {
     }
 
     /**
-     * A helper function to retrieve the captured file size.
+     * 检索捕获的文件大小的辅助函数.
      */
     private fun getFileSizeFromUri(contentUri: Uri): Long? {
         val cursor = requireContext()
