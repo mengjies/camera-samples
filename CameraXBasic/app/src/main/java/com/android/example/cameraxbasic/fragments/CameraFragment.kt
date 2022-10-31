@@ -168,6 +168,22 @@ class CameraFragment : Fragment() {
         return fragmentCameraBinding.root
     }
 
+    private fun setGalleryThumbnail(uri: Uri) {
+        // Run the operations in the view's thread
+        cameraUiContainerBinding?.photoViewButton?.let { photoViewButton ->
+            photoViewButton.post {
+                // Remove thumbnail padding
+                photoViewButton.setPadding(resources.getDimension(R.dimen.stroke_small).toInt())
+
+                // Load thumbnail into circular button using Glide
+                Glide.with(photoViewButton)
+                        .load(uri)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(photoViewButton)
+            }
+        }
+    }
+
     @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -298,6 +314,12 @@ class CameraFragment : Fragment() {
         // 必须在重新绑定之前取消绑定用例
         cameraProvider.unbindAll()
 
+        // TODO: new
+        if (camera != null) {
+            // Must remove observers from the previous camera instance
+            removeCameraStateObservers(camera!!.cameraInfo)
+        }
+
         try {
             // 可以在此处传递可变数量的用例 - 相机提供对 CameraControl 和 CameraInfo 的访问
             camera = cameraProvider.bindToLifecycle(
@@ -311,6 +333,11 @@ class CameraFragment : Fragment() {
         } catch (exc: Exception) {
             Log.e(TAG, "Use case binding failed", exc)
         }
+    }
+
+    // TODO: new
+    private fun removeCameraStateObservers(cameraInfo: CameraInfo) {
+        cameraInfo.cameraState.removeObservers(viewLifecycleOwner)
     }
 
     /**
